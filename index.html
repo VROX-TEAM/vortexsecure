@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-  <title>CyberSec Academy · Cyberpunk Ethical Hacking</title>
+  <title>CyberSec Academy · أكاديمية الأمن السيبراني</title>
   
-  <!-- Tailwind CSS Play CDN (with config) -->
+  <!-- Tailwind CSS الإعداد الصحيح -->
   <script>
-    // Tailwind configuration MUST be defined before the Tailwind script loads
-    tailwind = {
+    window.tailwind = {
       config: {
         darkMode: 'class',
         theme: {
@@ -25,13 +24,12 @@
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- React & Babel (production versions for stability) -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
+  <!-- React 18 -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone@7.24.5/babel.min.js" crossorigin></script>
   
   <style>
-    /* Neon glow utilities */
     .text-glow {
       text-shadow: 0 0 8px #00ff00aa, 0 0 20px #00ff0066;
     }
@@ -52,13 +50,10 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    // ---- Translations Dictionary ----
+    // ---- المحتوى بالعربية والإنجليزية ----
     const content = {
       en: {
         siteTitle: "CYBERSEC ACADEMY",
-        darkMode: "Dark",
-        lightMode: "Light",
-        langLabel: "EN",
         sec1: {
           title: "Ethical Hacking Fundamentals",
           subtitle: "White Hat vs Black Hat",
@@ -95,9 +90,6 @@
       },
       ar: {
         siteTitle: "أكاديمية الأمن السيبراني",
-        darkMode: "داكن",
-        lightMode: "فاتح",
-        langLabel: "AR",
         sec1: {
           title: "أساسيات الاختراق الأخلاقي",
           subtitle: "القبعة البيضاء مقابل القبعة السوداء",
@@ -134,7 +126,7 @@
       }
     };
 
-    // ---- Reusable Section Component ----
+    // مكون البطاقة
     function Section({ title, subtitle, darkMode, children }) {
       return (
         <section className={`rounded-2xl p-5 border transition-all duration-300 ${
@@ -155,13 +147,11 @@
       );
     }
 
-    // ---- Main App Component ----
+    // التطبيق الرئيسي
     function App() {
-      // Initialize dark mode to true, but we can also check system preference if desired
       const [darkMode, setDarkMode] = useState(true);
       const [lang, setLang] = useState('en');
 
-      // Apply dark class and text direction
       useEffect(() => {
         const html = document.documentElement;
         if (darkMode) {
@@ -177,13 +167,12 @@
 
       return (
         <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-gray-950 text-gray-100' : 'bg-gray-50 text-gray-800'} transition-colors duration-300`}>
-          {/* Header */}
           <header className={`sticky top-0 z-50 backdrop-blur-md border-b ${darkMode ? 'bg-gray-900/80 border-green-500/30' : 'bg-white/80 border-green-600/20'} px-4 py-3 flex items-center justify-between`}>
             <h1 className={`text-lg sm:text-2xl font-extrabold tracking-widest ${darkMode ? 'text-green-400 text-glow' : 'text-green-700'}`}>
               {t.siteTitle}
             </h1>
             <div className="flex items-center gap-2">
-              {/* Language Switcher */}
+              {/* تبديل اللغة */}
               <div className={`flex rounded-lg overflow-hidden border text-xs sm:text-sm font-semibold ${darkMode ? 'border-green-500/50' : 'border-green-600/50'}`}>
                 <button
                   onClick={() => setLang('en')}
@@ -198,7 +187,7 @@
                   AR
                 </button>
               </div>
-              {/* Dark/Light Toggle */}
+              {/* وضع الظلام/النور */}
               <button
                 onClick={() => setDarkMode(!darkMode)}
                 className={`w-9 h-9 flex items-center justify-center rounded-full border text-lg ${darkMode ? 'border-green-500/40 text-yellow-300 bg-gray-800' : 'border-gray-300 text-gray-700 bg-white'}`}
@@ -209,7 +198,6 @@
             </div>
           </header>
 
-          {/* Main Content */}
           <main className="flex-1 px-4 py-6 max-w-3xl mx-auto w-full space-y-8">
             <Section title={t.sec1.title} subtitle={t.sec1.subtitle} darkMode={darkMode}>
               <p className="mb-3">{t.sec1.p1}</p>
@@ -238,7 +226,6 @@
             </Section>
           </main>
 
-          {/* Footer */}
           <footer className={`text-center py-4 text-xs border-t ${darkMode ? 'border-green-500/20 text-gray-500' : 'border-green-600/20 text-gray-600'}`}>
             &copy; {new Date().getFullYear()} CyberSec Academy — Knowledge for Ethical Defense
           </footer>
@@ -246,7 +233,7 @@
       );
     }
 
-    // Mount the application safely
+    // التركيب
     const container = document.getElementById('root');
     if (container) {
       const root = ReactDOM.createRoot(container);
