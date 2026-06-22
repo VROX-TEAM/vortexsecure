@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <title>CyberSec Academy · Cyberpunk Ethical Hacking</title>
+  
+  <!-- Tailwind CSS Play CDN (with config) -->
+  <script>
+    // Tailwind configuration MUST be defined before the Tailwind script loads
+    tailwind = {
+      config: {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              neon: '#0f0',
+              darkBg: '#0a0f0f',
+              lightBg: '#f8fafc',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React & Babel (production versions for stability) -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
+  
+  <style>
+    /* Neon glow utilities */
+    .text-glow {
+      text-shadow: 0 0 8px #00ff00aa, 0 0 20px #00ff0066;
+    }
+    .dark .text-glow {
+      text-shadow: 0 0 12px #00ff00cc, 0 0 30px #00ff0088;
+    }
+    .border-glow {
+      box-shadow: 0 0 10px #00ff0040;
+    }
+    .dark .border-glow {
+      box-shadow: 0 0 15px #00ff0060;
+    }
+  </style>
+</head>
+<body class="transition-colors duration-300">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // ---- Translations Dictionary ----
+    const content = {
+      en: {
+        siteTitle: "CYBERSEC ACADEMY",
+        darkMode: "Dark",
+        lightMode: "Light",
+        langLabel: "EN",
+        sec1: {
+          title: "Ethical Hacking Fundamentals",
+          subtitle: "White Hat vs Black Hat",
+          p1: "Ethical hacking involves legally probing systems for vulnerabilities to strengthen security. Unlike malicious black hat hackers who exploit flaws for personal gain, white hat hackers work with authorization to identify and patch weaknesses before they can be misused.",
+          p2: "White Hats follow a strict code of ethics and obtain written permission before testing. Black Hats operate illegally, often causing data breaches, financial loss, and reputational damage. Gray Hats fall somewhere in between, sometimes exposing vulnerabilities without authorization but without malicious intent.",
+          p3: "Common methodologies include reconnaissance, scanning, gaining access, maintaining access, and covering tracks—mirroring actual attack patterns to ensure robust defense."
+        },
+        sec2: {
+          title: "Vulnerability Analysis",
+          subtitle: "CVEs, Payloads & Injection Techniques",
+          p1: "Common Vulnerabilities and Exposures (CVEs) provide a standardized identifier for publicly known security flaws. Each CVE details the affected software, severity, and potential impact, enabling security teams to prioritize patching.",
+          p2: "Payloads are pieces of code executed after exploiting a vulnerability. Examples include reverse shells that connect back to an attacker, or bind shells that open a port on the target. Crafting payloads requires understanding of assembly, system calls, and evasion techniques.",
+          p3: "Injection attacks exploit improper input validation. SQL injection (SQLi) manipulates database queries to extract or modify data. Cross-site scripting (XSS) injects malicious scripts into web pages. Command injection executes arbitrary OS commands on the server."
+        },
+        sec3: {
+          title: "Game Security Engineering",
+          subtitle: "Anti-Cheat, Validation & Memory Protection",
+          p1: "Anti-cheat systems employ kernel-mode drivers to monitor game memory and system calls. Signature scanning detects known cheat patterns, while heuristic analysis identifies suspicious behavior like abnormal memory writes or speed hacks.",
+          p2: "Client-server validation ensures critical game logic runs on the authoritative server. Player movements, item pickups, and hit detection are verified server-side to prevent tampering. Any discrepancy results in rollbacks or disconnection.",
+          p3: "Memory protection thwarts reverse engineering. Techniques include packing, obfuscation, anti-debugging traps, and integrity checks that detect code patches. Virtualization and code encryption add layers of defense against cheat developers."
+        },
+        sec4: {
+          title: "Arsenal Guide",
+          subtitle: "Must‑Have Tools for Ethical Hackers",
+          items: [
+            "Nmap – Network mapper for host discovery and port scanning.",
+            "Wireshark – Network protocol analyzer for deep packet inspection.",
+            "Burp Suite – Web application security testing platform.",
+            "Metasploit – Exploitation framework with extensive payload database.",
+            "IDA Pro / Ghidra – Interactive disassembler and reverse engineering suites.",
+            "Cheat Engine – Memory scanner and debugger for game hacking analysis."
+          ]
+        }
+      },
+      ar: {
+        siteTitle: "أكاديمية الأمن السيبراني",
+        darkMode: "داكن",
+        lightMode: "فاتح",
+        langLabel: "AR",
+        sec1: {
+          title: "أساسيات الاختراق الأخلاقي",
+          subtitle: "القبعة البيضاء مقابل القبعة السوداء",
+          p1: "يتضمن الاختراق الأخلاقي فحص الأنظمة بشكل قانوني لاكتشاف الثغرات وتعزيز الأمان. على عكس قراصنة القبعة السوداء الخبيثين الذين يستغلون العيوب لتحقيق مكاسب شخصية، يعمل قراصنة القبعة البيضاء بترخيص لتحديد الثغرات وإصلاحها قبل استغلالها.",
+          p2: "يلتزم أصحاب القبعة البيضاء بمدونة أخلاقية صارمة ويحصلون على إذن كتابي قبل الاختبار. يعمل أصحاب القبعة السوداء بشكل غير قانوني، مما يؤدي غالبًا إلى خروقات بيانات وخسائر مالية وأضرار بالسمعة. يقع أصحاب القبعة الرمادية في منطقة وسطى، حيث يكشفون أحيانًا ثغرات دون ترخيص لكن دون نية خبيثة.",
+          p3: "تشمل المنهجيات الشائعة الاستطلاع، والمسح، والوصول، والحفاظ على الوصول، وإخفاء الآثار - مما يحاكي أنماط الهجوم الفعلية لضمان دفاع قوي."
+        },
+        sec2: {
+          title: "تحليل الثغرات",
+          subtitle: "CVEs والحمولات وأساليب الحقن",
+          p1: "توفر الثغرات المكشوفة والمُعرّفة (CVE) معرفًا موحدًا للعيوب الأمنية المعروفة. يوضح كل CVE البرنامج المتأثر ومدى الخطورة والتأثير المحتمل، مما يساعد فرق الأمان في تحديد أولويات التحديثات.",
+          p2: "الحمولات هي أكواد تُنفذ بعد استغلال الثغرة. تشمل الأمثلة الصدفة العكسية التي تتصل بالمهاجم، أو الصدفة المرتبطة التي تفتح منفذًا على الهدف. يتطلب تصميم الحمولات فهم لغة التجميع واستدعاءات النظام وتقنيات التهرب.",
+          p3: "تستغل هجمات الحقن ضعف التحقق من المدخلات. يتلاعب حقن SQL (SQLi) باستعلامات قاعدة البيانات لاستخراج البيانات أو تعديلها. يقوم حقن السكربتات عبر المواقع (XSS) بحقن نصوص خبيثة في صفحات الويب. ينفذ حقن الأوامر أوامر نظام التشغيل على الخادم."
+        },
+        sec3: {
+          title: "هندسة أمن الألعاب",
+          subtitle: "مكافحة الغش والتحقق وحماية الذاكرة",
+          p1: "تستخدم أنظمة مكافحة الغش برامج تشغيل على مستوى النواة لمراقبة ذاكرة اللعبة واستدعاءات النظام. يكتشف المسح بالتوقيع أنماط الغش المعروفة، بينما يحلل التحليل الإرشادي السلوك المشبوه مثل الكتابة غير الطبيعية على الذاكرة أو تسريع السرعة.",
+          p2: "يضمن التحقق بين العميل والخادم تشغيل منطق اللعبة الحاسم على الخادم الموثوق. يتم التحقق من تحركات اللاعبين وجمع العناصر واكتشاف الإصابة من جانب الخادم لمنع التلاعب. يؤدي أي اختلاف إلى التراجع أو قطع الاتصال.",
+          p3: "تتصدى حماية الذاكرة للهندسة العكسية. تشمل التقنيات الحزم والتشويش وفخاخ مكافحة التصحيح وفحوصات السلامة التي تكتشف تعديل الكود. تضيف الطبقات مثل المحاكاة الافتراضية وتشفير الكود دفاعات إضافية ضد مطوري الغش."
+        },
+        sec4: {
+          title: "دليل الأدوات",
+          subtitle: "الأدوات الأساسية للقراصنة الأخلاقيين",
+          items: [
+            "Nmap – ماسح شبكات لاكتشاف الأجهزة وفحص المنافذ.",
+            "Wireshark – محلل بروتوكولات الشبكة للفحص العميق للحزم.",
+            "Burp Suite – منصة اختبار أمان تطبيقات الويب.",
+            "Metasploit – إطار عمل للاستغلال مع قاعدة بيانات حمولات واسعة.",
+            "IDA Pro / Ghidra – أدوات فك التجميع والهندسة العكسية التفاعلية.",
+            "Cheat Engine – ماسح ذاكرة ومصحح لتحليل قرصنة الألعاب."
+          ]
+        }
+      }
+    };
+
+    // ---- Reusable Section Component ----
+    function Section({ title, subtitle, darkMode, children }) {
+      return (
+        <section className={`rounded-2xl p-5 border transition-all duration-300 ${
+          darkMode 
+            ? 'bg-gray-900 border-green-500/40 border-glow' 
+            : 'bg-white border-green-600/30 shadow-md'
+        }`}>
+          <h2 className={`text-xl sm:text-2xl font-bold mb-1 ${darkMode ? 'text-green-400 text-glow' : 'text-green-700'}`}>
+            {title}
+          </h2>
+          <h3 className={`text-sm sm:text-base font-medium mb-4 ${darkMode ? 'text-green-300/70' : 'text-green-600'}`}>
+            {subtitle}
+          </h3>
+          <div className={`text-sm sm:text-base leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+            {children}
+          </div>
+        </section>
+      );
+    }
+
+    // ---- Main App Component ----
+    function App() {
+      // Initialize dark mode to true, but we can also check system preference if desired
+      const [darkMode, setDarkMode] = useState(true);
+      const [lang, setLang] = useState('en');
+
+      // Apply dark class and text direction
+      useEffect(() => {
+        const html = document.documentElement;
+        if (darkMode) {
+          html.classList.add('dark');
+        } else {
+          html.classList.remove('dark');
+        }
+        html.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        html.lang = lang;
+      }, [darkMode, lang]);
+
+      const t = content[lang];
+
+      return (
+        <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-gray-950 text-gray-100' : 'bg-gray-50 text-gray-800'} transition-colors duration-300`}>
+          {/* Header */}
+          <header className={`sticky top-0 z-50 backdrop-blur-md border-b ${darkMode ? 'bg-gray-900/80 border-green-500/30' : 'bg-white/80 border-green-600/20'} px-4 py-3 flex items-center justify-between`}>
+            <h1 className={`text-lg sm:text-2xl font-extrabold tracking-widest ${darkMode ? 'text-green-400 text-glow' : 'text-green-700'}`}>
+              {t.siteTitle}
+            </h1>
+            <div className="flex items-center gap-2">
+              {/* Language Switcher */}
+              <div className={`flex rounded-lg overflow-hidden border text-xs sm:text-sm font-semibold ${darkMode ? 'border-green-500/50' : 'border-green-600/50'}`}>
+                <button
+                  onClick={() => setLang('en')}
+                  className={`px-3 py-1 ${lang === 'en' ? (darkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-800') : (darkMode ? 'text-gray-400' : 'text-gray-500')}`}
+                >
+                  EN
+                </button>
+                <button
+                  onClick={() => setLang('ar')}
+                  className={`px-3 py-1 ${lang === 'ar' ? (darkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-800') : (darkMode ? 'text-gray-400' : 'text-gray-500')}`}
+                >
+                  AR
+                </button>
+              </div>
+              {/* Dark/Light Toggle */}
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className={`w-9 h-9 flex items-center justify-center rounded-full border text-lg ${darkMode ? 'border-green-500/40 text-yellow-300 bg-gray-800' : 'border-gray-300 text-gray-700 bg-white'}`}
+                aria-label="Toggle dark/light mode"
+              >
+                {darkMode ? '☀️' : '🌙'}
+              </button>
+            </div>
+          </header>
+
+          {/* Main Content */}
+          <main className="flex-1 px-4 py-6 max-w-3xl mx-auto w-full space-y-8">
+            <Section title={t.sec1.title} subtitle={t.sec1.subtitle} darkMode={darkMode}>
+              <p className="mb-3">{t.sec1.p1}</p>
+              <p className="mb-3">{t.sec1.p2}</p>
+              <p>{t.sec1.p3}</p>
+            </Section>
+
+            <Section title={t.sec2.title} subtitle={t.sec2.subtitle} darkMode={darkMode}>
+              <p className="mb-3">{t.sec2.p1}</p>
+              <p className="mb-3">{t.sec2.p2}</p>
+              <p>{t.sec2.p3}</p>
+            </Section>
+
+            <Section title={t.sec3.title} subtitle={t.sec3.subtitle} darkMode={darkMode}>
+              <p className="mb-3">{t.sec3.p1}</p>
+              <p className="mb-3">{t.sec3.p2}</p>
+              <p>{t.sec3.p3}</p>
+            </Section>
+
+            <Section title={t.sec4.title} subtitle={t.sec4.subtitle} darkMode={darkMode}>
+              <ul className={`list-disc list-inside space-y-1 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                {t.sec4.items.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
+            </Section>
+          </main>
+
+          {/* Footer */}
+          <footer className={`text-center py-4 text-xs border-t ${darkMode ? 'border-green-500/20 text-gray-500' : 'border-green-600/20 text-gray-600'}`}>
+            &copy; {new Date().getFullYear()} CyberSec Academy — Knowledge for Ethical Defense
+          </footer>
+        </div>
+      );
+    }
+
+    // Mount the application safely
+    const container = document.getElementById('root');
+    if (container) {
+      const root = ReactDOM.createRoot(container);
+      root.render(<App />);
+    }
+  </script>
+</body>
+</html>
